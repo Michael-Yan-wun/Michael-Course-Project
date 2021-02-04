@@ -5,12 +5,16 @@ import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
 import ElementUI from "element-ui";
 import axios from "axios";
 import Vueaxios from "vue-axios";
+// swiper
+import VueAwesomeSwiper from 'vue-awesome-swiper'
 
 
 //css
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 import "element-ui/lib/theme-chalk/index.css";
+// swiper css
+import 'swiper/swiper-bundle.css'
 
 Vue.config.productionTip = false;
 Vue.prototype.$http = axios;
@@ -25,6 +29,8 @@ Vue.use(IconsPlugin);
 //ElementUI
 Vue.use(ElementUI);
 
+// swiper
+Vue.use(VueAwesomeSwiper);
 new Vue({
   el: "#app",
   router,
