@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="whole">
     <!-- 說明區 -->
     <div id="intro"></div>
     <!-- 精選書籍 -->
@@ -84,8 +84,12 @@ export default {
     "Hiragino Sans", Meiryo, sans-serif;
 }
 
+#whole{
+  background-color: rgb(207, 205, 205);
+}
+
 #intro {
-  margin: 20px 0 20px 0;
+  margin-bottom: 15px;
   background-color: gray;
   width: 100%;
   height: 200px;

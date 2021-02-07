@@ -1,8 +1,7 @@
 <template>
   <div>
-    
     <header class="header">
-      <a class="header__logo" href="#">Michael的小教室</a>
+      <a class="header__logo" href="#">Michael小教室</a>
       <div
         class="ham-menu"
         @click="changeVisibility()"
@@ -12,10 +11,10 @@
       <nav class="header__nav-wrap" :class="{ open: burgerVisibility }">
         <ul class="header__nav-list" @click="burgerVisibility = false">
           <li class="header__nav-item">
-            <a class="header__nav-link" href="#">探索課程</a>
+            <router-link class="header__nav-link" :to="{name:'COURSE000'}">探索課程</router-link>
           </li>
           <li class="header__nav-item">
-            <a class="header__nav-link" href="#">學員登入</a>
+            <router-link class="header__nav-link" :to="{name:'login'}">學員登入</router-link>
           </li>
           <li class="header__nav-item">
             <a class="header__nav-link" href="#">Michael</a>
@@ -48,14 +47,14 @@ export default {
 }
 
 .header {
-  margin-bottom: 20px;
+  margin-bottom: 0px;
   display: flex;
   width: 100%;
   background-color: #fff;
   align-items: center;
   position: relative;
   box-sizing: border-box;
-  box-shadow: 0px 8px 10px #ccc;
+  box-shadow: 0px 8px 5px #ccc;
 }
 @media screen and (min-width: 960px) {
   .header {
