@@ -2,9 +2,9 @@
   <div id="footer">
     <div class="InnerSection">
       <!-- Add Logo -->
-      <h2 class="title">Michael小教室</h2>
+      <h2 class="title">Michael Studio</h2>
       <p class="introduce">
-        歡迎來到Michael的小教室，本教室主辦人林彥文，創立理念為『分享』並且期盼各位學員能在此找到分享的快樂，同時完成理想。
+        歡迎來到Michael的教學工作室，主辦人林彥文，名Michael，創立理念為『分享』並且期盼各位學員能在此找到分享的快樂，同時完成理想。
       </p>
       <p class="introduce">---A lazy youth, a lousy age.----</p>
     </div>

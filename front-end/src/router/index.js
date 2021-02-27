@@ -3,6 +3,7 @@ import Router from "vue-router";
 import COURSE000 from "@/pages/F0/COURSE000";
 import COURSEA000 from "@/pages/admin/A0/COURSEA000";
 import Login from "@/pages/admin/login";
+import Logout from "@/pages/admin/logout";
 
 Vue.use(Router);
 
@@ -26,6 +27,11 @@ const router = new Router({
       path: "/course/login",
       name: "login",
       component: Login
+    },
+    {
+      path: "/course/logout",
+      name: "logout",
+      component: Logout
     },
     {
       path: "/course/admin",

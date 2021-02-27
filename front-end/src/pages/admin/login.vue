@@ -4,19 +4,20 @@
       <div class="login-container">
         <div class="login-container-img"></div>
         <div class="login-container-content">
-          <form action="" class="login-form">
+          <p v-if="incorrectAuth">錯誤帳號密碼</p>
+          <form v-on:submit.prevent="login" action="" class="login-form">
             <h1>Login</h1>
             <p class="field">
               <label>Users name or Email</label>
-              <input type="text" name="username" placeholder="user" />
+              <input type="text" name="username" placeholder="user" v-model="username" />
             </p>
             <p class="field">
               <label>Password</label>
-              <input type="password" name="password" placeholder="password" />
+              <input type="password" name="password" placeholder="password" v-model="password" />
               <a href="">forget password?</a>
             </p>
             <!-- <router-link :to="{name:'COURSEA000'}"> -->
-            <button type="submit" class="submitBtn" @click="go">Sign in</button>
+            <button type="submit" class="submitBtn">Sign in</button>
             <!-- </router-link> -->
           </form>
         </div>
@@ -29,11 +30,29 @@
 export default {
   name: "login",
   data() {
-    return {};
+    return {
+      incorrectAuth: false,
+      username: "",
+      password: ""
+    };
   },
   methods: {
     go() {
       this.$router.push({ name: "COURSEA000" });
+    },
+    login() {
+      this.$store
+        .dispatch("userLogin", {
+          username: this.username,
+          password: this.password
+        })
+        .then(() => {
+          this.$router.push({ name: "COURSEA000" });
+        })
+        .catch(err => {
+          console.log(err);
+          this.incorrectAuth = true;
+        });
     }
   }
 };

@@ -2,22 +2,21 @@ import Vue from "vue";
 import App from "./App";
 import router from "./router";
 import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
-import ElementUI from "element-ui";
 import axios from "axios";
 import Vueaxios from "vue-axios";
-// swiper
-import VueAwesomeSwiper from 'vue-awesome-swiper'
-
-
 //css
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
-import "element-ui/lib/theme-chalk/index.css";
-// swiper css
-import 'swiper/swiper-bundle.css'
 
-Vue.config.productionTip = false;
-Vue.prototype.$http = axios;
+//vuex
+import store from './store'
+
+
+// Loading
+import Loading from 'vue-loading-overlay' //component
+import 'vue-loading-overlay/dist/vue-loading.css' //style
+Vue.component('Loading', Loading)
+
 
 //axios
 Vue.use(axios, Vueaxios);
@@ -26,17 +25,17 @@ Vue.use(axios, Vueaxios);
 Vue.use(BootstrapVue);
 Vue.use(IconsPlugin);
 
-//ElementUI
-Vue.use(ElementUI);
+Vue.config.productionTip = false
 
-// swiper
-Vue.use(VueAwesomeSwiper);
+
 new Vue({
   el: "#app",
   router,
-  components: { App },
-  template: "<App/>"
-});
+  store,
+  render: h=>h(App),}).$mount('#app')
+  // components: { App },
+  // template: "<App/>"
+// });
 
 
 

@@ -1,23 +1,26 @@
 <template>
   <div>
     <header class="header">
-      <a class="header__logo" href="#">Michael小教室</a>
+      <a class="header__logo"><span id="mylogo">Michael's Studio</span></a>
       <div
         class="ham-menu"
         @click="changeVisibility()"
         :class="{ active: burgerVisibility }"
-      >
-      </div>
+      ></div>
       <nav class="header__nav-wrap" :class="{ open: burgerVisibility }">
         <ul class="header__nav-list" @click="burgerVisibility = false">
           <li class="header__nav-item">
-            <router-link class="header__nav-link" :to="{name:'COURSE000'}">探索課程</router-link>
+            <router-link class="header__nav-link" :to="{ name: 'COURSE000' }"
+              >探索課程</router-link
+            >
           </li>
           <li class="header__nav-item">
-            <router-link class="header__nav-link" :to="{name:'login'}">學員登入</router-link>
+            <router-link class="header__nav-link" :to="{ name: 'login' }"
+              >學員登入</router-link
+            >
           </li>
           <li class="header__nav-item">
-            <a class="header__nav-link" href="#">Michael</a>
+            <a class="header__nav-link">Michael</a>
           </li>
         </ul>
       </nav>
@@ -30,8 +33,9 @@ export default {
   name: "Header",
   data() {
     return {
-      burgerVisibility: false
-    }
+      burgerVisibility: false,
+      username: ""
+    };
   },
   methods: {
     changeVisibility() {
@@ -44,6 +48,10 @@ export default {
 <style scoped>
 * {
   box-sizing: border-box;
+}
+
+#mylogo {
+  font-family: cursive;
 }
 
 .header {
@@ -167,5 +175,4 @@ export default {
 .header__nav-link:hover::after {
   transform: scale(1, 1);
 }
-
 </style>
