@@ -6,8 +6,7 @@ from corsheaders.defaults import default_headers
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'h^ap$hjx6$pq9$$y@egsm=_5vkk!!p1ij&x-_nf0zo%+x*#^g='
-
+SECRET_KEY = ''
 DEBUG = True
 
 ALLOWED_HOSTS = []
