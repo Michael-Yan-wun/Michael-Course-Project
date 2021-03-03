@@ -6,7 +6,8 @@ from corsheaders.defaults import default_headers
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = ''
+SECRET_KEY = 'h^ap$hjx6$pq9$$y@egsm=_5vkk!!p1ij&x-_nf0zo%+x*#^g='
+
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -73,8 +74,8 @@ DATABASES = {
         'NAME': 'coursedb',
         'USER': 'michael',
         'PASSWORD': 'Sniper_1214',
-        # 'HOST': '10.0.100.182',  # 資策會
-        'HOST': '172.20.10.3',  # 家
+        'HOST': '10.0.100.182',  # 資策會
+        # 'HOST': '192.168.50.176',  # 家
         'PORT': '3306',
     }
 }

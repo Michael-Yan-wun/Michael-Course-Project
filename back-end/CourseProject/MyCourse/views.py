@@ -88,7 +88,7 @@ def course_detail(request, pk):
             return JsonResponse(course_serializer.data)
         elif request.method == "PUT":
             modify_course = Course.objects.filter(id__contains=request.data['id'])
-            # print(request.data['name'])
+
             if (request.data['id'] != None):
                 # print('hi')
                 modify_course.update(name=request.data['name'],
@@ -103,12 +103,12 @@ def course_detail(request, pk):
         elif request.method == "DELETE":
             # 做soft delete
             # sys = 0表示已刪除 不要刪除資料庫資料
-            if course.sys == 0 or course.sys == "":
+            if course.sys == 0:
+                course.delete()
                 return JsonResponse({'message': 'course was already deleted!!'}, status=status.HTTP_204_NO_CONTENT)
             else:
                 my_course = Course.objects.filter(id__contains=course.pk)
                 my_course.update(sys=0)
-                # course.delete()，真的要刪除才使用此項目
                 return JsonResponse({'message': 'course was deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
     except Course.DoesNotExist:
         return JsonResponse({'message': 'The course does not exist'}, status=status.HTTP_404_NOT_FOUND)
@@ -135,3 +135,17 @@ def course_online(request, pk):
         return JsonResponse({'message': 'Updated Successfully'}, status=status.HTTP_200_OK)
     else:
         return JsonResponse({'message': 'Updated fails'}, status=status.HTTP_404_NOT_FOUND)
+
+
+@swagger_auto_schema(operation_summary="根據id恢復已刪除課程",
+                     operation_description='此接口為最高權限者刪除使用。',
+                     method="PUT")
+@api_view(['PUT'])
+def course_recovery(request, pk):
+    if request.method == 'PUT':
+        course = Course.objects.get(pk=pk)
+        recovery_course = Course.objects.filter(id__contains=course.pk)
+        recovery_course.update(sys=1)
+        return JsonResponse({'message': 'Recovery Successfully'}, status=status.HTTP_200_OK)
+    else:
+        return JsonResponse({'message': 'Recovery fails'}, status=status.HTTP_404_NOT_FOUND)
