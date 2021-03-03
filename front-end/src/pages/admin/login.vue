@@ -1,39 +1,57 @@
 <template>
-  <body>
-    <div class="loginBox">
-      <div class="login-container">
-        <div class="login-container-img"></div>
-        <div class="login-container-content">
-          <p v-if="incorrectAuth">錯誤帳號密碼</p>
-          <form v-on:submit.prevent="login" action="" class="login-form">
-            <h1>Login</h1>
-            <p class="field">
-              <label>Users name or Email</label>
-              <input type="text" name="username" placeholder="user" v-model="username" />
-            </p>
-            <p class="field">
-              <label>Password</label>
-              <input type="password" name="password" placeholder="password" v-model="password" />
-              <a href="">forget password?</a>
-            </p>
-            <!-- <router-link :to="{name:'COURSEA000'}"> -->
-            <button type="submit" class="submitBtn">Sign in</button>
-            <!-- </router-link> -->
-          </form>
+  <div>
+    <Header />
+    <body>
+      <div class="loginBox">
+        <div class="login-container">
+          <div class="login-container-img"></div>
+          <div class="login-container-content">
+            <form v-on:submit.prevent="login" action="" class="login-form">
+              <h1>Login</h1>
+              <p id="mywrong" v-if="incorrectAuth">Wrong username or password!</p>
+              <p class="field">
+                <label>Users name or Email</label>
+                <input
+                  type="text"
+                  name="username"
+                  placeholder="user"
+                  v-model="username"
+                />
+              </p>
+              <p class="field">
+                <label>Password</label>
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="password"
+                  v-model="password"
+                />
+                <a href="">forget password?</a>
+              </p>
+              <!-- <router-link :to="{name:'COURSEA000'}"> -->
+              <button type="submit" class="submitBtn">Sign in</button>
+              <!-- </router-link> -->
+            </form>
+          </div>
         </div>
       </div>
-    </div>
-  </body>
+    </body>
+  </div>
 </template>
 
 <script>
+import Header from "../../components/Header";
 export default {
   name: "login",
+  components: {
+    Header
+  },
   data() {
     return {
       incorrectAuth: false,
       username: "",
-      password: ""
+      password: "",
+      myteam: ["michael", "Julia"]
     };
   },
   methods: {
@@ -47,7 +65,11 @@ export default {
           password: this.password
         })
         .then(() => {
-          this.$router.push({ name: "COURSEA000" });
+          if (this.myteam.indexOf(this.username) != -1) {
+            this.$router.push({ name: "COURSEA000" });
+          }else{
+            this.$router.push({ name: "COURSE100" });
+          }
         })
         .catch(err => {
           console.log(err);
@@ -59,6 +81,13 @@ export default {
 </script>
 
 <style scoped>
+
+#mywrong{
+  font-family: "Aguafina Script", Arial, Helvetica, sans-serif;
+  color: rgb(224, 98, 98);
+  font-size: 15px;
+}
+
 body {
   position: absolute;
   top: 50%;
@@ -76,7 +105,7 @@ body {
 .login-container-content .login-form .parting-line,
 .login-container-content .login-form .field > label,
 .login-container-content .login-form .field > a {
-  font-size: 5px;
+  font-size: 7px;
   color: #a7a7a7;
 }
 

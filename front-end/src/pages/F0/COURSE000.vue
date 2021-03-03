@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Header/>
     <!-- 說明區 -->
     <Intro />
     <!-- 精選書籍 -->
@@ -49,10 +50,12 @@ import "swiper/swiper-bundle.css";
 
 import Footer from "@/components/Footer.vue";
 import axios from "axios";
+import Header from '../../components/Header'
 
 export default {
   name: "COURSE000",
   components: {
+    Header,
     Footer,
     swiper,
     swiperSlide,

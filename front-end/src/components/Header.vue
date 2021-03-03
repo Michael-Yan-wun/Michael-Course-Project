@@ -19,8 +19,36 @@
               >學員登入</router-link
             >
           </li>
+          <li
+            class="header__nav-item"
+            v-if="username == '' || username == null"
+          >
+            <router-link class="header__nav-link" :to="{ name: 'COURSE000' }"
+              >Hi Users</router-link
+            >
+          </li>
           <li class="header__nav-item">
-            <a class="header__nav-link">Michael</a>
+            <router-link v-if="manageTeam.indexOf(username) != -1"
+              class="header__nav-link"
+              :to="{ name: 'COURSEA000' }"
+              >{{ username }}</router-link
+            >
+            <router-link v-if="manageTeam.indexOf(username) == -1"
+              class="header__nav-link"
+              :to="{ name: 'COURSE100' }"
+              >{{ username }}</router-link
+            >
+          </li>
+          <li
+            class="header__nav-item"
+            v-if="manageTeam.indexOf(username) != -1 && username=='michael'"
+          >
+            <a
+              href="http://localhost:8000/swagger/"
+              target="_blank"
+              class="header__nav-link"
+              >API document</a
+            >
           </li>
         </ul>
       </nav>
@@ -34,12 +62,19 @@ export default {
   data() {
     return {
       burgerVisibility: false,
-      username: ""
+      username: "",
+      manageTeam: ["michael","Julia"]
     };
+  },
+  created() {
+    this.getUser();
   },
   methods: {
     changeVisibility() {
       this.burgerVisibility = !this.burgerVisibility;
+    },
+    getUser() {
+      this.username = this.$store.state.username;
     }
   }
 };

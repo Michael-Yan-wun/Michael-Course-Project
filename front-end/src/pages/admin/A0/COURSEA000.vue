@@ -1,5 +1,6 @@
 <template>
   <div id="back-end">
+    <Header />
     <loading :active.sync="isLoading"
       ><img src="../../../assets/img/loading.gif" alt="loading"
     /></loading>
@@ -119,9 +120,47 @@
       </b-card>
     </div>
 
-    <!-- 整個table -->
+    <!-- Table標題 -->
     <div class="content">
       <h1>Michael's Studio後台管理系統</h1>
+      <!-- Developer專區 -->
+      <div v-if="username == 'michael'">
+        <b-button
+          class="devTag"
+          pill
+          variant="outline-success"
+          :class="{'active':visibility == 'all'}"
+          @click="visibility = 'all'"
+          >All Datas</b-button
+        >
+        <b-button
+          class="devTag"
+          pill
+          variant="outline-primary"
+          :class="{'active':visibility == 'manage'}"
+          @click="visibility = 'manage'"
+        >
+          Manage Datas
+        </b-button>
+        <b-button
+          class="devTag"
+          pill
+          variant="outline-info"
+          :class="{'active':visibility == 'online'}"
+          @click="visibility = 'online'"
+        >
+          Online Datas
+        </b-button>
+        <b-button
+          class="devTag"
+          pill
+          variant="outline-warning"
+          :class="{'active':visibility == 'deleted'}"
+          @click="visibility = 'deleted'"
+        >
+          Delete Mode
+        </b-button>
+      </div>
       <!-- 整個table -->
       <table id="data-table">
         <thead>
@@ -137,7 +176,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(item, index) in tableDetails" :key="index">
+          <tr v-for="(item, index) in filterDatas" :key="index">
             <td>
               <input
                 type="checkbox"
@@ -151,28 +190,43 @@
             <td>{{ item.teacher }}</td>
             <td>{{ item.date }}</td>
             <td>{{ item.loc }}</td>
-            <td>{{ item.content.substring(0, 10) + "......" }}</td>
+            <td>{{ item.content }}</td>
             <td>
               <!-- 操作按鈕 -->
               <b-button
                 variant="outline-info"
-                @click="showModal_Modify(index)"
+                @click="showModal_Modify(item.id)"
                 ref="btnShow_modify"
                 >Modify</b-button
               >
               <b-button
+                v-if="visibility != 'deleted'"
                 variant="outline-danger"
-                @click="showModal(index)"
                 ref="btnShow"
+                @click="showModal(item.id)"
+                >Delete</b-button
+              >
+              <b-button
+                v-if="visibility == 'deleted'"
+                variant="outline-warning"
+                ref="btnShow"
+                @click="recovery(item)"
+                >Recover</b-button
+              >
+              <b-button
+                v-if="visibility == 'deleted'"
+                variant="outline-danger"
+                ref="btnShow"
+                @click="remove(index, item)"
                 >Delete</b-button
               >
             </td>
             <!-- delete Modal -->
             <div>
               <b-modal
-                :id="'delete-modal' + index"
+                :id="'delete-modal' + item.id"
                 title="刪除確認"
-                @ok="remove(index)"
+                @ok="remove(index, item)"
               >
                 <p class="my-4">是否刪除本資料</p>
               </b-modal>
@@ -186,7 +240,7 @@
       <b-modal
         v-for="(item, index) in modifyDetials"
         :key="index"
-        :id="'modify-modal' + index"
+        :id="'modify-modal' + item.id"
         scrollable
         title="修改資料"
         @ok="modify(item)"
@@ -276,12 +330,18 @@
 <script>
 import axios from "axios";
 import { getAPI } from "../../../service";
+import Header from "../../../components/Header";
 
 export default {
   name: "COURSEA000",
-
+  components: {
+    Header
+  },
   data() {
     return {
+      // btn顯示樣式
+      btnStatus:[false,false,false,false],
+      username: "",
       // 新增至資料庫
       courseDetails: {
         name: "",
@@ -292,56 +352,47 @@ export default {
         img: null,
         online: false
       },
+      //Loading
+      isLoading: false,
       // 資料庫噴回來
-      tableDetails: [
-        // {
-        //   id:'1',
-        //   name:'Java',
-        //   teacher:'michael',
-        //   loc:'台中',
-        //   date:'2020-12-14',
-        //   content:'hello',
-        //   online:true,
-        //   img:null,
-        //   sys:1
-        // },
-        //  {
-        //   id:'2',
-        //   name:'Python',
-        //   teacher:'michael',
-        //   loc:'台中',
-        //   date:'2020-12-14',
-        //   content:'hello',
-        //   online:true,
-        //   img:null,
-        //   sys:1
-        // },
-      ],
+      tableDetails: [],
       // 修改暫存區
       modifyDetials: [],
-      //Loading
-      isLoading: false
+      // developer table
+      devDetails: [],
+      // developer visibility
+      visibility: "all"
     };
   },
 
   created() {
     this.queryAllDatas();
-    console.log(this.$store.state.username)
+    this.username = this.$store.state.username;
   },
 
   methods: {
     queryAllDatas() {
       getAPI("/api/course/details").then(response => {
         response.data.forEach(element => {
-          if (element.sys == 1) {
-            element.img = `http://127.0.0.1:8000${element.img}`;
-            this.tableDetails.push(element);
-            let copy = Object.assign({}, element);
-            this.modifyDetials.push(copy);
+          element.img = `http://127.0.0.1:8000${element.img}`;
+          if (element.content.length > 10) {
+            element.content = element.content.substring(0, 10) + "......";
+          }
+          if (this.username == "michael") {
+            this.devDetails.push(element);
+            let devObj = Object.assign({}, element);
+            this.modifyDetials.push(devObj);
+          } else {
+            if (element.sys == 1) {
+              // 原table
+              let copyObj = Object.assign({}, element);
+              this.tableDetails.push(copyObj);
+              // modify的model
+              let copy = Object.assign({}, element);
+              this.modifyDetials.push(copy);
+            }
           }
         });
-        console.log(this.tableDetails);
-        console.log(this.modifyDetials);
         this.isLoading = false;
       });
     },
@@ -371,8 +422,9 @@ export default {
           .then(response => {
             console.log(response);
             // refresh table
-            this.modifyDetials=[];
+            this.modifyDetials = [];
             this.tableDetails = [];
+            this.devDetails = [];
             this.queryAllDatas();
             // clear input
             this.courseDetails = {
@@ -429,8 +481,8 @@ export default {
     },
 
     // soft-Delete
-    async remove(index) {
-      let id = this.tableDetails[index].id;
+    async remove(index, item) {
+      let id = item.id;
       await axios
         .delete(`http://127.0.0.1:8000/api/course/${id}`, {
           headers: {
@@ -438,7 +490,24 @@ export default {
           }
         })
         .then(() => {
-          this.tableDetails.splice(index, 1);
+          if (this.username == "michael") {
+            this.modifyDetials = [];
+            this.tableDetails = [];
+            this.devDetails = [];
+            this.queryAllDatas();
+            this.$bvToast.toast("刪除成功", {
+              title: "刪除訊息",
+              variant: "success",
+              solid: true
+            });
+          } else {
+            this.tableDetails.splice(index, 1);
+            this.$bvToast.toast("刪除成功", {
+              title: "刪除訊息",
+              variant: "success",
+              solid: true
+            });
+          }
         })
         .catch(() => {
           this.$bvToast.toast("權限不足，刪除失敗", {
@@ -446,6 +515,34 @@ export default {
             variant: "danger",
             solid: true
           });
+        });
+    },
+
+    async recovery(item) {
+      axios
+        .put(`http://127.0.0.1:8000/api/course/recovery/${item.id}`, item, {
+          headers: {
+            Authorization: `Bearer ${this.$store.state.accessToken}`
+          }
+        })
+        .then(response => {
+          if (response.status == 200) {
+            this.$bvToast.toast("更新成功", {
+              title: "更新訊息",
+              variant: "info",
+              solid: true
+            });
+            this.modifyDetials = [];
+            this.tableDetails = [];
+            this.devDetails = [];
+            this.queryAllDatas();
+          } else {
+            this.$bvToast.toast("更新失敗", {
+              title: "更新訊息",
+              variant: "warning",
+              solid: true
+            });
+          }
         });
     },
 
@@ -493,7 +590,7 @@ export default {
             });
           }
         });
-    }
+    },
   },
   // 欄位驗證使用
   computed: {
@@ -529,25 +626,61 @@ export default {
     // 課程簡述
     decState() {
       return (
-        this.courseDetails.content.length >= 10 &&
-        this.courseDetails.content != "" &&
+        this.courseDetails.content.length <= 10 &&
+        this.courseDetails.content.replace(/\s*/g, "") != "" &&
         this.courseDetails.content != null
       );
     },
     decInvaild() {
       if (this.courseDetails.content.length > 0) {
-        return "輸入最少10個字!";
+        return "輸入少於10個字，且不能為空白";
       }
       return "請輸入課程簡述!";
+    },
+
+    // Dev mode
+    filterDatas() {
+      if (this.username == "michael") {
+        if (this.visibility == "all") {
+          return this.devDetails;
+        } else if (this.visibility == "online") {
+          let newDatas = [];
+          this.devDetails.forEach(item => {
+            if (item.online) {
+              newDatas.push(item);
+            }
+          });
+          return newDatas;
+        } else if (this.visibility == "deleted") {
+          let newDatas = [];
+          this.devDetails.forEach(item => {
+            if (item.sys == 0) {
+              newDatas.push(item);
+            }
+          });
+          return newDatas;
+        } else if (this.visibility == "manage") {
+          let newDatas = [];
+          this.devDetails.forEach(item => {
+            if (item.sys == 1) {
+              newDatas.push(item);
+            }
+          });
+          return newDatas;
+        }
+      } else {
+        return this.tableDetails;
+      }
     }
-  }
+  },
 };
 </script>
 
 <style scoped>
 * {
   color: #34495e;
-  font-family: Georgia, "Times New Roman", Times, serif;
+  font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN",
+    "Hiragino Sans", Meiryo, sans-serif;
 }
 
 /* loading css */
@@ -649,5 +782,13 @@ tr:hover td {
   margin-top: 15px;
   width: 270px;
   height: 140px;
+}
+
+/* DevBtn */
+.devTag {
+  margin: 5px 5px 10px 5px;
+}
+#hello:active {
+  color: blue;
 }
 </style>
