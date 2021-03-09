@@ -1,2 +1,2 @@
-# Michael Course Website
- Building a course website to offer a learning place.
+## Michael Studio Project
+### Build front-end and back-end project for Michael Studio.
